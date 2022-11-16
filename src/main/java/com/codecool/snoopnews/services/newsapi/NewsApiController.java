@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -58,19 +62,21 @@ public class NewsApiController {
                                          @RequestParam(required = false) String to,
                                          @RequestParam(required = false) String language,
                                          @RequestParam(required = false) String sortBy,
-                                         @RequestParam(required = false) Integer pageSize,
-                                         @RequestParam(required = false) Integer page) {
-        EverythingRequest everythingRequest = EverythingRequest.builder()
-                .q(q)
-                .sources(sources)
-                .domains(domains)
-                .from(from)
-                .to(to)
-                .language(language)
-                .sortBy(sortBy)
-                .pageSize(pageSize)
-                .page(page)
-                .build();
-        return newsApiClient.getEverything(everythingRequest);
+                                         @RequestParam(required = false) String pageSize,
+                                         @RequestParam(required = false) String page) {
+
+        Map<String, String> everythingRequestParams = new LinkedHashMap<>();
+        everythingRequestParams.put("q", q);
+        everythingRequestParams.put("sources", sources);
+        everythingRequestParams.put("domains", domains);
+        everythingRequestParams.put("from", from);
+        everythingRequestParams.put("to", to);
+        everythingRequestParams.put("language", language);
+        everythingRequestParams.put("sortBy", sortBy);
+        everythingRequestParams.put("pageSize", pageSize);
+        everythingRequestParams.put("page", page);
+
+        everythingRequestParams.values().removeIf(Objects::isNull);
+        return newsApiClient.getEverything(everythingRequestParams);
     }
 }
