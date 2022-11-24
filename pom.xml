@@ -40,8 +40,8 @@
     </build>
     <modules>
         <module>oauth2-authorization-server</module>
-        <module>spring-security-client</module>
         <module>oauth2-resource-server</module>
+        <module>spring-security-client</module>
     </modules>
 
 </project>
