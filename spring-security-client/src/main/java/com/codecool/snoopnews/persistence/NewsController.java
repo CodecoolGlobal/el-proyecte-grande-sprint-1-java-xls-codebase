@@ -1,7 +1,6 @@
 package com.codecool.snoopnews.persistence;
 
 import com.codecool.snoopnews.persistence.models.Article;
-import com.codecool.snoopnews.persistence.models.Source;
 import com.codecool.snoopnews.persistence.repositories.ArticleRepository;
 import com.codecool.snoopnews.persistence.repositories.SourceRepository;
 import org.springframework.http.HttpStatus;
