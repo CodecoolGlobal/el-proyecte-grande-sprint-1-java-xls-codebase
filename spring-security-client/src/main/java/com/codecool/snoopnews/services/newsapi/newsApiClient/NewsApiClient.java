@@ -9,6 +9,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Map;
+
 
 @FeignClient(value = "newsApiClient", url = "${newsApi.baseUrl}", configuration = newsApiConfig.class)
 public interface NewsApiClient {
@@ -20,5 +22,5 @@ public interface NewsApiClient {
     ArticleResponse getTopHeadlines(@SpringQueryMap TopHeadlinesRequest topHeadlinesRequest);
 
     @GetMapping(value = "${newsApi.path.everything}")
-    ArticleResponse getEverything(@SpringQueryMap EverythingRequest everythingRequest);
+    ArticleResponse getEverything(@SpringQueryMap Map<String, String> params);
 }
