@@ -1,6 +1,6 @@
 package com.codecool.snoopnews.services.newsapi.models.response;
 
-import com.codecool.snoopnews.services.newsapi.models.Source;
+import com.codecool.snoopnews.persistence.models.Source;
 import lombok.Data;
 
 import java.util.List;
