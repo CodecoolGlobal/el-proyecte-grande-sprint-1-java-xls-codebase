@@ -1,7 +1,5 @@
-package com.codecool.oauth2_authorization_server.config;
+package com.codecool.oauth2_authorization_server.users.model;
 
-import com.codecool.oauth2_authorization_server.users.model.User;
-import com.codecool.oauth2_authorization_server.users.model.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

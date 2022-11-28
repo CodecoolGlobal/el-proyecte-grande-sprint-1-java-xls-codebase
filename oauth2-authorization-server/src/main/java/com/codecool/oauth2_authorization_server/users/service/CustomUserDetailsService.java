@@ -1,8 +1,9 @@
-package com.codecool.oauth2_authorization_server.config;
+package com.codecool.oauth2_authorization_server.users.service;
 
 //import com.codecool.oauth2_authorization_server.users.model.User;
 //import com.codecool.oauth2_authorization_server.users.model.UserRole;
 
+import com.codecool.oauth2_authorization_server.users.model.CustomUserDetails;
 import com.codecool.oauth2_authorization_server.users.model.User;
 import com.codecool.oauth2_authorization_server.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

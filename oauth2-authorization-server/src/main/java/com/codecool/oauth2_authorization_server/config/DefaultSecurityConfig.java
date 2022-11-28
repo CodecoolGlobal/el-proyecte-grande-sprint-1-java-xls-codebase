@@ -1,5 +1,6 @@
 package com.codecool.oauth2_authorization_server.config;
 
+import com.codecool.oauth2_authorization_server.users.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
