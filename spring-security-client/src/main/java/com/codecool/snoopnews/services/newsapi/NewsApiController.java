@@ -1,6 +1,5 @@
 package com.codecool.snoopnews.services.newsapi;
 
-import com.codecool.snoopnews.services.newsapi.models.request.EverythingRequest;
 import com.codecool.snoopnews.services.newsapi.models.response.ArticleResponse;
 import com.codecool.snoopnews.services.newsapi.newsApiClient.NewsApiClient;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +59,7 @@ public class NewsApiController {
 //    }
 
     @GetMapping("/test/resource")
-    public String test (@RegisteredOAuth2AuthorizedClient("api-client-authorization-code")OAuth2AuthorizedClient client) {
+    public String test(@RegisteredOAuth2AuthorizedClient("api-client-authorization-code") OAuth2AuthorizedClient client) {
         return this.webClient
                 .get()
                 .uri("http://127.0.0.1:8090/test/resource")
@@ -70,7 +69,6 @@ public class NewsApiController {
                 .block();
     }
 
-    @CrossOrigin
     @GetMapping("/everything")
     public ArticleResponse getEverything(@RequestParam(required = false) String q,
                                          @RequestParam(required = false) String sources,
