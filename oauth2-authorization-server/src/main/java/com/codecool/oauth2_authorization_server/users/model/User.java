@@ -22,6 +22,8 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private String firstName;
+    private String lastName;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<UserRole> userRoles = new HashSet<>();
 }

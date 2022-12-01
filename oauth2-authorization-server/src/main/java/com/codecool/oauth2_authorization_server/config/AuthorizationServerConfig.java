@@ -5,7 +5,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -27,15 +27,17 @@ import org.springframework.security.web.SecurityFilterChain;
 import java.util.UUID;
 
 @Configuration(proxyBeanMethods = false)
+@AllArgsConstructor
 public class AuthorizationServerConfig {
 
-    @Autowired
+    private CORSCustomizer corsCustomizer;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+        corsCustomizer.corsCustomizer(http);
         return http.formLogin(Customizer.withDefaults()).build();
     }
 
@@ -44,15 +46,15 @@ public class AuthorizationServerConfig {
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("api-client")
                 .clientSecret(bCryptPasswordEncoder.encode("secret"))
-//                .clientSecret("{noop}secret")
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                 .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("http://127.0.0.1:8080/login/oauth2/code/api-client-oidc")
-                .redirectUri("http://127.0.0.1:8080/authorized")
-                .redirectUri("http://auth-server:9000")
+//                .redirectUri("http://127.0.0.1:8080/login/oauth2/code/api-client-oidc")
+//                .redirectUri("http://127.0.0.1:8080/authorized")
+                .redirectUri("http://127.0.0.1:3000/authorized")
                 .scope(OidcScopes.OPENID)
+                .scope((OidcScopes.PROFILE))
                 .scope("api.read")
                 .scope("api.write")
                 .clientSettings(ClientSettings.builder()

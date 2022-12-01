@@ -33,6 +33,8 @@ public class CreateUser {
                 .username("user")
                 .email("email@email.com")
                 .password(encodedPassword)
+                .firstName("Axel")
+                .lastName("K.")
                 .userRoles(Set.of(userRole))
                 .build();
 

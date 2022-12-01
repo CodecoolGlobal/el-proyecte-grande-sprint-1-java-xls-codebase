@@ -16,6 +16,10 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
+    public String getFirstName() {
+        return user.getFirstName();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<UserRole> userRoles = user.getUserRoles();

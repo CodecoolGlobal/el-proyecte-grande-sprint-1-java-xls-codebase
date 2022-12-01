@@ -69,7 +69,6 @@ public class NewsApiController {
                 .block();
     }
 
-    @CrossOrigin
     @GetMapping("/everything")
     public ArticleResponse getEverything(@RequestParam(required = false) String q,
                                          @RequestParam(required = false) String sources,

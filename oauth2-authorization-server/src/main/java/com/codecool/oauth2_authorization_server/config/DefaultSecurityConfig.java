@@ -1,7 +1,7 @@
 package com.codecool.oauth2_authorization_server.config;
 
 import com.codecool.oauth2_authorization_server.users.service.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,9 +15,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @Configuration
+@AllArgsConstructor
 public class DefaultSecurityConfig {
 
-    @Autowired
+    private CORSCustomizer corsCustomizer;
     private CustomUserDetailsService customUserDetailsService;
 
     @Bean
@@ -37,6 +38,7 @@ public class DefaultSecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        corsCustomizer.corsCustomizer((http));
         http.headers().frameOptions().disable();
         http
                 .csrf().ignoringAntMatchers("/h2-console/**")
@@ -57,12 +59,4 @@ public class DefaultSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//
-//    @Bean
-//    public DataSource dataSource() {
-//        return new EmbeddedDatabaseBuilder()
-//                .setType(EmbeddedDatabaseType.H2)
-//                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
-//                .build();
-//    }
 }
