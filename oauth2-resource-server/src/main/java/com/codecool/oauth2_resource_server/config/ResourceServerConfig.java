@@ -31,13 +31,20 @@ public class ResourceServerConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         corsCustomizer.corsCustomizer((http));
-        return http
+        http.headers().frameOptions().disable();
+        http
+                .csrf().ignoringAntMatchers("/h2-console/**")
+                .and()
+                .authorizeRequests(authorize -> authorize
+                        .antMatchers("/h2-console/**")
+                        .permitAll()
+                );
+        http
                 .oauth2ResourceServer(
                         j -> j.jwt().jwkSetUri("http://auth-server:9000/oauth2/jwks")
                 ).authorizeRequests()
                 .anyRequest()
-                .authenticated()
-                .and()
-                .build();
+                .authenticated();
+        return http.build();
     }
 }

@@ -37,7 +37,8 @@ public class DefaultSecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
+            throws Exception {
         corsCustomizer.corsCustomizer((http));
         http.headers().frameOptions().disable();
         http
