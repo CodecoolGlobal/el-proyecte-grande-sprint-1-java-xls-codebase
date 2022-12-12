@@ -1,0 +1,7 @@
+newsApi:
+  baseUrl: "https://newsapi.org"
+  apiKey: "0b5c38466d0a450bbb714c52faa8f5bc"
+  path:
+    everything: "/v2/everything"
+    topHeadlines: "/v2/top-headlines"
+    sources: "/v2/top-headlines/sources"

@@ -39,9 +39,9 @@
         </plugins>
     </build>
     <modules>
-        <module>oauth2-authorization-server</module>
-        <module>oauth2-resource-server</module>
-        <module>spring-security-client</module>
+        <module>modules/oauth2-authorization-server</module>
+        <module>modules/oauth2-resource-server</module>
+        <module>modules/feign-rest-client</module>
     </modules>
 
 </project>
