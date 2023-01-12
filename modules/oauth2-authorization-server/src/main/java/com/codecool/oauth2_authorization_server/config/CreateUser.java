@@ -6,7 +6,7 @@ import com.codecool.oauth2_authorization_server.users.model.UserRole;
 import com.codecool.oauth2_authorization_server.users.repository.RoleRepository;
 import com.codecool.oauth2_authorization_server.users.repository.UserRepository;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
@@ -14,17 +14,17 @@ import java.util.Set;
 public class CreateUser {
     UserRepository userRepository;
     RoleRepository roleRepository;
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    PasswordEncoder passwordEncoder;
 
-    public CreateUser(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public CreateUser(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.passwordEncoder = passwordEncoder;
         init();
     }
 
     public void init() {
-        String encodedPassword = bCryptPasswordEncoder.encode("password");
+        String encodedPassword = passwordEncoder.encode("password");
         UserRole userRole = UserRole.builder()
                 .name(RoleType.USER)
                 .build();
