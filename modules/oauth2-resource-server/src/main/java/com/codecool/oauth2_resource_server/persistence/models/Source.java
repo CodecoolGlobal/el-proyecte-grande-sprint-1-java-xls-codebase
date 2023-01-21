@@ -12,11 +12,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 
-@Entity(name = "source")
+@Entity
 public class Source {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int persistenceId;
+    private long persistenceId;
     private String id;
     private String name;
     private String description;
@@ -24,6 +24,6 @@ public class Source {
     private String category;
     private String language;
     private String country;
-    @OneToMany(mappedBy = "source")
+    @OneToMany(mappedBy = "source", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Article> articles;
 }

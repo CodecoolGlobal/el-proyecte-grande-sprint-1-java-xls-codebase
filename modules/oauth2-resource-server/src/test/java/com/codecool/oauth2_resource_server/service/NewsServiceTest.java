@@ -7,12 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class NewsServiceTest {
@@ -22,6 +22,9 @@ class NewsServiceTest {
 
     @Mock
     private ArticleRepository articleRepository;
+
+    @Mock
+    private SourceService sourceService;
 
     private Source source = Source.builder()
             .id("source")
@@ -40,19 +43,48 @@ class NewsServiceTest {
             .build();
 
     @Test
-    void add_addNewArticle_isSuccess() {
-        when(articleRepository.save(article)).thenReturn(article);
-
-        Article addedArticle = newsService.add(article);
-        assertThat(addedArticle).isNotNull();
+    void add_Article_callsRepositorySaveMethod() {
+        newsService.add(article);
+        verify(articleRepository).save(article);
     }
 
     @Test
-    void findAll_findAllArticles_returnsListOfArticles() {
-        List<Article> articles = List.of(article, article);
-        when(articleRepository.findAll()).thenReturn(articles);
-
-        List<Article> savedArticles = newsService.findAll();
-        assertThat(savedArticles.size()).isEqualTo(articles.size());
+    void add_Article_callsSourceServiceSourceExists() {
+        newsService.add(article);
+        verify(sourceService).sourceExists(anyString(), anyString());
     }
+
+    @Test
+    void add_ArticleWithExistingSource_callsSourceServiceFindFirstMethod() {
+        Mockito.when(sourceService.sourceExists(anyString(), anyString()))
+                .thenReturn(true);
+
+        newsService.add(article);
+        verify(sourceService).findFirst(anyString(), anyString());
+    }
+
+    @Test
+    void add_ArticleWithExistingSource_replaceArticleSourceWithExistingSource() {
+        Mockito.when(sourceService.sourceExists(anyString(), anyString()))
+                .thenReturn(true);
+        Mockito.when(sourceService.findFirst(anyString(), anyString()))
+                .thenReturn(Source.builder().persistenceId(1).build());
+
+        newsService.add(article);
+        assertTrue(article.getSource().getPersistenceId() > 0);
+
+    }
+
+    @Test
+    void findAll_shouldCallRepositoryFindAllMethod() {
+        newsService.findAll();
+        verify(articleRepository).findAll();
+    }
+
+    @Test
+    void checkArticleExists_shouldCallExistsArticleByUrl() {
+        newsService.checkArticleExists(article);
+        verify(articleRepository).existsArticleByUrl(anyString());
+    }
+
 }

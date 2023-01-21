@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SourceRepository extends JpaRepository<Source, Long> {
+    public Boolean existsSourceByIdOrName(String id, String name);
+
+    public Source findFirstByIdOrName(String id, String name);
 }

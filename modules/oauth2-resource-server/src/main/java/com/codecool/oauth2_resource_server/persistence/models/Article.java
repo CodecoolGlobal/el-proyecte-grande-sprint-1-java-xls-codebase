@@ -12,13 +12,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 
 @Entity
-@Table(name = "article")
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "source_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "SOURCE_ID")
     private Source source;
     private String author;
     private String title;

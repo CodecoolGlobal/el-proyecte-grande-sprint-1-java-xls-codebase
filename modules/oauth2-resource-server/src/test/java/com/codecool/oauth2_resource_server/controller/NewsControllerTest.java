@@ -5,6 +5,7 @@ import com.codecool.oauth2_resource_server.persistence.models.Source;
 import com.codecool.oauth2_resource_server.service.NewsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,6 +14,7 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,6 +49,18 @@ class NewsControllerTest {
                         .content(asJsonString(article))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void save_validJwtAndAlreadyExistingArticle_throwsResponseStatusExceptionWithStatus423() throws Exception {
+        Mockito.when(newsService.checkArticleExists(any(Article.class)))
+                .thenReturn(true);
+        mvc.perform(post("/api/news/articles")
+                        .with(SecurityMockMvcRequestPostProcessors.jwt())
+                        .content(asJsonString(article))
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
