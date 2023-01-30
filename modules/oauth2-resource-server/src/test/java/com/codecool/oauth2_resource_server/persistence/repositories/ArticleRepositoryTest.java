@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @DataJpaTest
@@ -40,10 +41,11 @@ class ArticleRepositoryTest {
     }
 
     @Test
-    public void delete_deleteArticle_ReturnsEmptyOptionalWhenSearchingForDeletedArticleId() {
+    public void deleteArticleByID_deleteArticleWithExistingId_thenDeletingShouldBeSuccessful() {
         Article savedArticle = articleRepository.save(article);
-        articleRepository.delete(savedArticle);
-
-        assertThat(articleRepository.findById(savedArticle.getId())).isEmpty();
+        Long articleId = savedArticle.getId();
+        articleRepository.deleteById(articleId);
+        boolean deletedArticle = articleRepository.existsById(articleId);
+        assertFalse(deletedArticle);
     }
 }

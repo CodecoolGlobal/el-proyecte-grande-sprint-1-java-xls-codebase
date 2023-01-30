@@ -15,19 +15,6 @@ public class ResourceServerConfig {
 
     private CORSCustomizer corsCustomizer;
 
-
-    //    @Bean
-//    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .mvcMatcher("/test**")
-//                .authorizeRequests()
-//                .mvcMatchers("/test**")
-//                .access("hasAuthority('SCOPE_api.read')")
-//                .and()
-//                .oauth2ResourceServer()
-//                .jwt();
-//        return http.build();
-//    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         corsCustomizer.corsCustomizer((http));

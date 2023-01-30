@@ -8,7 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-    public Optional<Article> findFirstByUrl(String url);
+    Optional<Article> findFirstByUrl(String url);
 
-    public Boolean existsArticleByUrl(String url);
+    Boolean existsArticleByUrl(String url);
+
+    void deleteById(long id);
 }

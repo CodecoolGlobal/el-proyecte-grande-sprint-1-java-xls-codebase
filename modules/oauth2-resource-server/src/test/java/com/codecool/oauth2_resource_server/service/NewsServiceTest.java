@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 
@@ -87,4 +88,9 @@ class NewsServiceTest {
         verify(articleRepository).existsArticleByUrl(anyString());
     }
 
+    @Test
+    void delete_should_callDeleteArticleById() {
+        newsService.delete(anyLong());
+        verify(articleRepository).deleteById(anyLong());
+    }
 }

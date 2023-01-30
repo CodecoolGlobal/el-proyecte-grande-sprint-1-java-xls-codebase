@@ -1,6 +1,7 @@
 package com.codecool.oauth2_resource_server.persistence.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,5 +26,6 @@ public class Source {
     private String language;
     private String country;
     @OneToMany(mappedBy = "source", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<Article> articles;
 }

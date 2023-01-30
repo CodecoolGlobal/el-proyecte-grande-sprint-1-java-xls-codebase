@@ -5,6 +5,7 @@ import com.codecool.oauth2_resource_server.persistence.models.Source;
 import com.codecool.oauth2_resource_server.persistence.repositories.ArticleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,5 +31,10 @@ public class NewsService {
 
     public boolean checkArticleExists(Article article) {
         return articleRepository.existsArticleByUrl(article.getUrl());
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        articleRepository.deleteById(id);
     }
 }

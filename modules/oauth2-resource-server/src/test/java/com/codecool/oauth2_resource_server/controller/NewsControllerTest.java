@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -76,6 +78,21 @@ class NewsControllerTest {
         mvc.perform(post("/api/news/articles")
                         .content(asJsonString(article))
                         .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void delete_validJwtAndId_returnsStatus204() throws Exception {
+        Mockito.doNothing().when(newsService).delete(anyLong());
+
+        mvc.perform(delete("/api/news/articles/{id}", anyLong())
+                        .with(SecurityMockMvcRequestPostProcessors.jwt()))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void delete_noJwtAndId_returnsStatus403() throws Exception {
+        mvc.perform(delete("/api/news/articles/{id}", 1L))
                 .andExpect(status().isForbidden());
     }
 
