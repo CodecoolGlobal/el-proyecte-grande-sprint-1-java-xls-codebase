@@ -28,6 +28,9 @@ public class Article {
     private String publishedAt;
     @Column(columnDefinition = "TEXT")
     private String content;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "USER_ID")
+    private UserEntity userEntity;
 
 }
 
