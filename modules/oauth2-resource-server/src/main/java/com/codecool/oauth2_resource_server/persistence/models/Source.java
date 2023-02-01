@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -27,5 +28,5 @@ public class Source {
     private String country;
     @OneToMany(mappedBy = "source", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Set<Article> articles;
+    private Set<Article> articles = new HashSet<>();
 }

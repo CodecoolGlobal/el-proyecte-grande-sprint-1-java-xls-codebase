@@ -2,7 +2,9 @@ package com.codecool.oauth2_resource_server.controller;
 
 import com.codecool.oauth2_resource_server.persistence.models.Article;
 import com.codecool.oauth2_resource_server.persistence.models.Source;
+import com.codecool.oauth2_resource_server.persistence.models.UserEntity;
 import com.codecool.oauth2_resource_server.service.NewsService;
+import com.codecool.oauth2_resource_server.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -10,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.server.ResponseStatusException;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -37,8 +41,14 @@ class NewsControllerTest {
             .publishedAt("2023-01-11T01:19:56Z")
             .content("Content")
             .build();
+
+    UserEntity user = UserEntity.builder()
+            .username("test")
+            .build();
     @MockBean
     private NewsService newsService;
+    @MockBean
+    private UserService userService;
     @Autowired
     private WebApplicationContext webApplicationContext;
     @Autowired
@@ -54,7 +64,7 @@ class NewsControllerTest {
     }
 
     @Test
-    void save_validJwtAndAlreadyExistingArticle_throwsResponseStatusExceptionWithStatus423() throws Exception {
+    void save_validJwtAndAlreadyExistingArticle_ReturnsStatus423() throws Exception {
         Mockito.when(newsService.checkArticleExists(any(Article.class)))
                 .thenReturn(true);
         mvc.perform(post("/api/news/articles")
@@ -66,6 +76,30 @@ class NewsControllerTest {
     }
 
     @Test
+    void save_validJwtAndAlreadyExistingArticle_throwsResponseStatusException() throws Exception {
+        Mockito.when(newsService.checkArticleExists(any(Article.class)))
+                .thenReturn(true);
+        mvc.perform(post("/api/news/articles")
+                        .with(SecurityMockMvcRequestPostProcessors.jwt())
+                        .content(asJsonString(article))
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException));
+    }
+
+    @Test
+    void save_validJwtAndArticleCreatingNewUser_runsCatchBlock() throws Exception {
+        Mockito.when(userService.findByUsername(anyString()))
+                .thenThrow(UsernameNotFoundException.class);
+        mvc.perform(post("/api/news/articles")
+                        .with(SecurityMockMvcRequestPostProcessors.jwt())
+                        .content(asJsonString(article))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
+
+
+    @Test
     void save_validJwtAndNullValue_returnsStatus400() throws Exception {
         mvc.perform(post("/api/news/articles")
                         .with(SecurityMockMvcRequestPostProcessors.jwt())
@@ -74,7 +108,7 @@ class NewsControllerTest {
     }
 
     @Test
-    void save_noJwtAndNullValue_returnsStatus403() throws Exception {
+    void save_noJwtAndArticle_returnsStatus403() throws Exception {
         mvc.perform(post("/api/news/articles")
                         .content(asJsonString(article))
                         .contentType(MediaType.APPLICATION_JSON))

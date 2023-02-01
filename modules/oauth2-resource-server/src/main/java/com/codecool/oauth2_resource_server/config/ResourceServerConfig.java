@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 
@@ -27,11 +28,10 @@ public class ResourceServerConfig {
                         .permitAll()
                 );
         http
-                .oauth2ResourceServer(
-                        j -> j.jwt().jwkSetUri("http://auth-server:9000/oauth2/jwks")
-                ).authorizeRequests()
-                .anyRequest()
-                .authenticated();
+                .authorizeRequests(authorize -> authorize
+                        .anyRequest()
+                        .authenticated())
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
         return http.build();
     }
 }
