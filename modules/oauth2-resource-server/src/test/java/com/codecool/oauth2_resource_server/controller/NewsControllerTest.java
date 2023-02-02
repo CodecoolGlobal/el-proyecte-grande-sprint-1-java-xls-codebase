@@ -7,7 +7,6 @@ import com.codecool.oauth2_resource_server.service.NewsService;
 import com.codecool.oauth2_resource_server.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,6 +56,10 @@ class NewsControllerTest {
 
     @Test
     void save_validJwtAndArticle_returnsStatusCreated() throws Exception {
+        UserEntity mockedUserEntity = mock(UserEntity.class);
+        when(mockedUserEntity.getId()).thenReturn(1L);
+        when(userService.findByUsername(anyString())).thenReturn(mockedUserEntity);
+        when(newsService.checkArticleExists(any(Article.class))).thenReturn(false);
         mvc.perform(post("/api/news/articles")
                         .with(SecurityMockMvcRequestPostProcessors.jwt())
                         .content(asJsonString(article))
@@ -65,8 +69,10 @@ class NewsControllerTest {
 
     @Test
     void save_validJwtAndAlreadyExistingArticle_ReturnsStatus423() throws Exception {
-        Mockito.when(newsService.checkArticleExists(any(Article.class)))
-                .thenReturn(true);
+        UserEntity mockedUserEntity = mock(UserEntity.class);
+        when(mockedUserEntity.getId()).thenReturn(1L);
+        when(userService.findByUsername(anyString())).thenReturn(mockedUserEntity);
+        when(newsService.checkArticleExists(any(Article.class))).thenReturn(true);
         mvc.perform(post("/api/news/articles")
                         .with(SecurityMockMvcRequestPostProcessors.jwt())
                         .content(asJsonString(article))
@@ -77,8 +83,10 @@ class NewsControllerTest {
 
     @Test
     void save_validJwtAndAlreadyExistingArticle_throwsResponseStatusException() throws Exception {
-        Mockito.when(newsService.checkArticleExists(any(Article.class)))
-                .thenReturn(true);
+        UserEntity mockedUserEntity = mock(UserEntity.class);
+        when(mockedUserEntity.getId()).thenReturn(1L);
+        when(userService.findByUsername(anyString())).thenReturn(mockedUserEntity);
+        when(newsService.checkArticleExists(any(Article.class))).thenReturn(true);
         mvc.perform(post("/api/news/articles")
                         .with(SecurityMockMvcRequestPostProcessors.jwt())
                         .content(asJsonString(article))
@@ -89,8 +97,7 @@ class NewsControllerTest {
 
     @Test
     void save_validJwtAndArticleCreatingNewUser_runsCatchBlock() throws Exception {
-        Mockito.when(userService.findByUsername(anyString()))
-                .thenThrow(UsernameNotFoundException.class);
+        when(userService.findByUsername(anyString())).thenThrow(UsernameNotFoundException.class);
         mvc.perform(post("/api/news/articles")
                         .with(SecurityMockMvcRequestPostProcessors.jwt())
                         .content(asJsonString(article))
@@ -117,7 +124,9 @@ class NewsControllerTest {
 
     @Test
     void delete_validJwtAndId_returnsStatus204() throws Exception {
-        Mockito.doNothing().when(newsService).delete(anyLong());
+        UserEntity mockedUser = mock(UserEntity.class);
+        when(userService.findByUsername(anyString())).thenReturn(mockedUser);
+        doNothing().when(newsService).delete(anyLong(), any(UserEntity.class));
 
         mvc.perform(delete("/api/news/articles/{id}", anyLong())
                         .with(SecurityMockMvcRequestPostProcessors.jwt()))

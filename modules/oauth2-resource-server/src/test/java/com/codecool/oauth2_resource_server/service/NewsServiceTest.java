@@ -2,6 +2,7 @@ package com.codecool.oauth2_resource_server.service;
 
 import com.codecool.oauth2_resource_server.persistence.models.Article;
 import com.codecool.oauth2_resource_server.persistence.models.Source;
+import com.codecool.oauth2_resource_server.persistence.models.UserEntity;
 import com.codecool.oauth2_resource_server.persistence.repositories.ArticleRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -76,21 +78,18 @@ class NewsServiceTest {
     }
 
     @Test
-    void findAll_shouldCallRepositoryFindAllMethod() {
-        newsService.findAll();
-        verify(articleRepository).findAll();
-    }
-
-    @Test
-    void checkArticleExists_shouldCallExistsArticleByUrl() {
+    void checkArticleExists_shouldCallExistsArticleByUrlAndUserEntity() {
+        UserEntity mockedUser = mock(UserEntity.class);
+        article.setUserEntity(mockedUser);
         newsService.checkArticleExists(article);
-        verify(articleRepository).existsArticleByUrl(anyString());
+        verify(articleRepository).existsArticleByUrlAndUserEntity(article.getUrl(), mockedUser);
     }
 
     @Test
-    void delete_should_callDeleteArticleById() {
-        Long id = 0L;
-        newsService.delete(id);
-        verify(articleRepository).deleteById(id);
+    void delete_should_callDeleteArticleByIdAndUserEntity() {
+        UserEntity mockedUser = mock(UserEntity.class);
+        long id = 0L;
+        newsService.delete(id, mockedUser);
+        verify(articleRepository).deleteByIdAndUserEntity(id, mockedUser);
     }
 }

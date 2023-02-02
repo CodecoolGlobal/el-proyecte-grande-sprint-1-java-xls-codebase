@@ -2,6 +2,7 @@ package com.codecool.oauth2_resource_server.service;
 
 import com.codecool.oauth2_resource_server.persistence.models.Article;
 import com.codecool.oauth2_resource_server.persistence.models.Source;
+import com.codecool.oauth2_resource_server.persistence.models.UserEntity;
 import com.codecool.oauth2_resource_server.persistence.repositories.ArticleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,16 +26,16 @@ public class NewsService {
         return articleRepository.save(article);
     }
 
-    public List<Article> findAll() {
-        return articleRepository.findAll();
+    public List<Article> findAll(UserEntity userEntity) {
+        return articleRepository.findArticleByUserEntity(userEntity);
     }
 
     public boolean checkArticleExists(Article article) {
-        return articleRepository.existsArticleByUrl(article.getUrl());
+        return articleRepository.existsArticleByUrlAndUserEntity(article.getUrl(), article.getUserEntity());
     }
 
     @Transactional
-    public void delete(Long id) {
-        articleRepository.deleteById(id);
+    public void delete(Long id, UserEntity userEntity) {
+        articleRepository.deleteByIdAndUserEntity(id, userEntity);
     }
 }

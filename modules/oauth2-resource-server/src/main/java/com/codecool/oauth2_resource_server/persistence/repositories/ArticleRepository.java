@@ -1,16 +1,18 @@
 package com.codecool.oauth2_resource_server.persistence.repositories;
 
 import com.codecool.oauth2_resource_server.persistence.models.Article;
+import com.codecool.oauth2_resource_server.persistence.models.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-    Optional<Article> findFirstByUrl(String url);
 
-    Boolean existsArticleByUrl(String url);
+    Boolean existsArticleByUrlAndUserEntity(String url, UserEntity userEntity);
 
-    void deleteById(long id);
+    void deleteByIdAndUserEntity(long id, UserEntity userEntity);
+
+    List<Article> findArticleByUserEntity(UserEntity userEntity);
 }

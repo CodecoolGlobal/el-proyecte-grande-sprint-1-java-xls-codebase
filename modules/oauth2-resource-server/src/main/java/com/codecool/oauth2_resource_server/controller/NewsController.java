@@ -25,34 +25,36 @@ public class NewsController {
 
     @PostMapping(value = "/api/news/articles")
     public ResponseEntity<Article> save(@RequestBody Article article, @AuthenticationPrincipal Jwt jwt) {
-
-        if (newsService.checkArticleExists(article)) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Article already exists.");
-        }
+        UserEntity userEntity;
         try {
-            UserEntity userEntity = userService.findByUsername(jwt.getSubject());
-            article.setUserEntity(userEntity);
+            userEntity = userService.findByUsername(jwt.getSubject());
+
         } catch (Exception e) {
-            UserEntity userEntity = UserEntity.builder()
+            userEntity = UserEntity.builder()
                     .username(jwt.getSubject())
                     .build();
-            article.setUserEntity(userEntity);
         }
+        article.setUserEntity(userEntity);
+
+        if (userEntity.getId() > 0 && newsService.checkArticleExists(article)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Article already exists.");
+        }
+
         Article savedArticle = newsService.add(article);
         return new ResponseEntity<>(savedArticle, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/api/news/articles")
     public ResponseEntity<List<Article>> findAll(@AuthenticationPrincipal Jwt jwt) {
-        logger.info("Jwt-subject: " + jwt.getSubject());
-
-        List<Article> articles = newsService.findAll();
+        UserEntity userEntity = userService.findByUsername(jwt.getSubject());
+        List<Article> articles = newsService.findAll(userEntity);
         return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/api/news/articles/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        newsService.delete(id);
+    public void delete(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
+        UserEntity userEntity = userService.findByUsername(jwt.getSubject());
+        newsService.delete(id, userEntity);
     }
 }
