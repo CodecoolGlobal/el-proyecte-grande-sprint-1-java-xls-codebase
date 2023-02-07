@@ -27,6 +27,7 @@ config:
   cors:
     allowedOrigins:
       - ${config.client.reactFrontend.uri}
+      - "*"
     allowedHeaders:
       - "*"
     allowedMethods:

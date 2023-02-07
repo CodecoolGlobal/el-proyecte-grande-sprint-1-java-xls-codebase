@@ -23,7 +23,7 @@ public class CORSCustomizer {
             CorsConfigurationSource source = s -> {
                 CorsConfiguration corsConfiguration = new CorsConfiguration();
                 corsConfiguration.setAllowCredentials(true);
-                corsConfiguration.setAllowedOrigins(allowedOrigins);
+                corsConfiguration.setAllowedOriginPatterns(allowedOrigins);
                 corsConfiguration.setAllowedHeaders(allowedHeaders);
                 corsConfiguration.setAllowedMethods(allowedMethods);
                 return corsConfiguration;

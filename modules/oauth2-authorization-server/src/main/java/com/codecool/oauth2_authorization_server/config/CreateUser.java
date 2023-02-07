@@ -3,31 +3,32 @@ package com.codecool.oauth2_authorization_server.config;
 import com.codecool.oauth2_authorization_server.users.model.RoleType;
 import com.codecool.oauth2_authorization_server.users.model.User;
 import com.codecool.oauth2_authorization_server.users.model.UserRole;
-import com.codecool.oauth2_authorization_server.users.repository.RoleRepository;
-import com.codecool.oauth2_authorization_server.users.repository.UserRepository;
+import com.codecool.oauth2_authorization_server.users.service.UserRoleService;
+import com.codecool.oauth2_authorization_server.users.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
 @Configuration
+@AllArgsConstructor
 public class CreateUser {
-    UserRepository userRepository;
-    RoleRepository roleRepository;
+
+    private final UserService userService;
+    private final UserRoleService userRoleService;
     PasswordEncoder passwordEncoder;
 
-    public CreateUser(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        init();
-    }
 
     public void init() {
         String encodedPassword = passwordEncoder.encode("password");
+
         UserRole userRole = UserRole.builder()
                 .name(RoleType.USER)
                 .build();
+
+        UserRole savedUserRole = userRoleService.add(userRole);
+
 
         User user = User.builder()
                 .username("user")
@@ -35,9 +36,9 @@ public class CreateUser {
                 .password(encodedPassword)
                 .firstName("Axel")
                 .lastName("K.")
-                .userRoles(Set.of(userRole))
+                .userRoles(Set.of(savedUserRole))
                 .build();
 
-        userRepository.save(user);
+        userService.add(user);
     }
 }
