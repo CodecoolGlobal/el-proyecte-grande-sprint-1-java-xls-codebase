@@ -47,6 +47,7 @@
         <module>modules/oauth2-authorization-server</module>
         <module>modules/oauth2-resource-server</module>
         <module>modules/feign-rest-client</module>
+        <module>modules/api-gateway</module>
     </modules>
 
 </project>
