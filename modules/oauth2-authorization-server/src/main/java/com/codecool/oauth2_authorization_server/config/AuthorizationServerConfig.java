@@ -42,14 +42,27 @@ public class AuthorizationServerConfig {
     @Value("${config.provider.settings.issuer}")
     private String providerSettingsIssuer;
 
-    @Value("${config.client.reactFrontend.id}")
-    private String clientId;
+//    @Value("${config.client.reactFrontend.id}")
+//    private String clientId;
 
-    @Value("${config.client.reactFrontend.secret}")
+//    @Value("${config.client.reactFrontend.secret}")
+//    private String clientSecret;
+//
+//    @Value("${config.client.reactFrontend.redirectUri}")
+//    private String redirectUri;
+
+
+    @Value("${config.client.gateway.id}")
+    private String clientId;
+    @Value("${config.client.gateway.secret}")
     private String clientSecret;
 
-    @Value("${config.client.reactFrontend.redirectUri}")
-    private String redirectUri;
+    @Value("${config.client.gateway.redirectCodeUri}")
+    private String redirectCodeUri;
+
+    @Value("${config.client.gateway.redirectAuthorizedUri}")
+    private String redirectAuthorizedUri;
+
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -59,6 +72,24 @@ public class AuthorizationServerConfig {
         return http.formLogin(Customizer.withDefaults()).build();
     }
 
+//    @Bean
+//    public RegisteredClientRepository registeredClientRepository() {
+//        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
+//                .clientId(clientId)
+//                .clientSecret(passwordEncoder.encode(clientSecret))
+//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+//                .redirectUri(redirectUri)
+//                .scope(OidcScopes.OPENID)
+//                .scope(OidcScopes.PROFILE)
+//                .clientSettings(ClientSettings.builder()
+//                        .requireAuthorizationConsent(true)
+//                        .build())
+//                .build();
+//        return new InMemoryRegisteredClientRepository(registeredClient);
+//    }
+
     @Bean
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
@@ -67,13 +98,16 @@ public class AuthorizationServerConfig {
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri(redirectUri)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .redirectUri(redirectCodeUri)
+                .redirectUri(redirectAuthorizedUri)
                 .scope(OidcScopes.OPENID)
                 .scope(OidcScopes.PROFILE)
                 .scope("articles.read")
                 .scope("articles.write")
                 .clientSettings(ClientSettings.builder()
                         .requireAuthorizationConsent(true)
+                        .requireProofKey(true)
                         .build())
                 .tokenSettings(
                         TokenSettings.builder()

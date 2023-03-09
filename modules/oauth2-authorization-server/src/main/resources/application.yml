@@ -1,6 +1,14 @@
 server:
   port: 9000
 
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.security.oauth2: INFO
+#    org.springframework.boot.autoconfigure: DEBUG
+
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
@@ -16,14 +24,23 @@ spring:
 config:
   provider:
     settings:
-      issuer: http://auth-server:9000
+      issuer: "http://auth-server:9000"
+
+  #  client:
+  #    reactFrontend:
+  #      id: snoop_87037db79d7c1abb5803321d75d56a84
+  #      secret: vE8SjPX1KI
+  #      uri: http://127.0.0.1:3000
+  #      redirectUri: ${config.client.reactFrontend.uri}/authorized
 
   client:
-    reactFrontend:
-      id: snoop_87037db79d7c1abb5803321d75d56a84
-      secret: vE8SjPX1KI
-      uri: http://127.0.0.1:3000
-      redirectUri: ${config.client.reactFrontend.uri}/authorized
+    gateway:
+      id: gateway-client
+      secret: secret
+      uri: "http://127.0.0.1:8070"
+      redirectCodeUri: "${config.client.gateway.uri}/login/oauth2/code/gateway-client-oidc"
+      redirectAuthorizedUri: "${config.client.gateway.uri}/authorized"
+
   cors:
     allowedOrigins:
       - ${config.client.reactFrontend.uri}
@@ -32,4 +49,3 @@ config:
       - "*"
     allowedMethods:
       - "*"
-

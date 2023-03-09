@@ -1,2 +1,33 @@
 server:
   port: 8070
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          gateway-client-oidc:
+            provider: spring
+            client-id: gateway-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:8070/login/oauth2/code/{registrationId}"
+            scope: openid
+            client-name: gateway-client-oidc
+          gateway-client-authorization-code:
+            provider: spring
+            client-id: gateway-client
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:8070/authorized"
+            scope: articles.read, articles.write
+            client-name: gateway-client-authorization-code
+        provider:
+          spring:
+            issuer-uri: "http://auth-server:9000"
+
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
