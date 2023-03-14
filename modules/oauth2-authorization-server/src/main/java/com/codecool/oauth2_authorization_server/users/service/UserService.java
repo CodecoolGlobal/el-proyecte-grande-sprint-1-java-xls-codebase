@@ -5,7 +5,6 @@ import com.codecool.oauth2_authorization_server.users.model.User;
 import com.codecool.oauth2_authorization_server.users.model.UserRole;
 import com.codecool.oauth2_authorization_server.users.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,6 @@ import java.util.Set;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -26,7 +24,6 @@ public class UserService {
     }
 
     public User add(User user) {
-        log.info("this is a test");
         UserRole userRole = UserRole.builder()
                 .name(RoleType.USER)
                 .build();

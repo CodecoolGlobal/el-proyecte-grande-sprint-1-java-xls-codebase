@@ -1,7 +1,15 @@
 server:
   port: 8070
+#  servlet:
+#    session:
+#      timeout: 20s
+#  reactive:
+#    session:
+#      timeout: 20s
 
 spring:
+  main:
+    web-application-type: reactive
   security:
     oauth2:
       client:
@@ -25,9 +33,30 @@ spring:
         provider:
           spring:
             issuer-uri: "http://auth-server:9000"
+  #            authorization-uri: "http://auth-server:9000/oauth2/authorize"
+  #            token-uri: "http://auth-server:9000/oauth2/token"
+  cloud:
+    gateway:
+      routes:
+        - id: feign_route
+          uri: http://127.0.0.1:8080
+          predicates:
+            - Path=/everything/**
+          filters:
+            - TokenRelay=
+        - id: saved_articles
+          uri: http://127.0.0.1:8090
+          predicates:
+            - Path=/api/news/articles
+          filters:
+            - TokenRelay=
+
 
 logging:
   level:
     org:
       springframework:
         security: TRACE
+        cloud:
+          gateway: TRACE
+        web: DEBUG
